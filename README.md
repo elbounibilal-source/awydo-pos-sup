@@ -1,4 +1,4 @@
-# نقطة بيع الجملة — POS Gros & demi-gros (نسخة الويب للتجربة)
+# Awydo — نقطة بيع الجملة ونصف الجملة (نسخة الويب للتجربة)
 
 تطبيق نقطة بيع لتجار الجملة ونصف الجملة بالمغرب: يعمل **بدون إنترنت**، ويُثبَّت على الهاتف كتطبيق (PWA)، ويزامن البيانات مع **Supabase** فور رجوع الاتصال.
 
@@ -17,16 +17,16 @@
 
 ## 1) GitHub
 
-1. افتح github.com ← **New repository** ← الاسم مثلاً `pos-gros` ← **Create repository**.
+1. افتح github.com ← **New repository** ← الاسم مثلاً `awydo` ← **Create repository**.
 2. اضغط **uploading an existing file**، واسحب **كل محتوى** مجلد المشروع (وليس المجلد نفسه)، ثم **Commit changes**.
 
 أو بالطرفية:
 
 ```bash
 cd wholesale-pos-web
-git init && git add . && git commit -m "POS Gros — first version"
+git init && git add . && git commit -m "Awydo — first version"
 git branch -M main
-git remote add origin https://github.com/<حسابك>/pos-gros.git
+git remote add origin https://github.com/<حسابك>/awydo.git
 git push -u origin main
 ```
 
@@ -42,9 +42,9 @@ git push -u origin main
 
 ## 3) Netlify (الرابط للهاتف)
 
-1. افتح app.netlify.com ← **Add new site ← Import an existing project ← GitHub** ← اختر `pos-gros`.
+1. افتح app.netlify.com ← **Add new site ← Import an existing project ← GitHub** ← اختر `awydo`.
 2. اترك Build command فارغاً، وPublish directory = `.` ← **Deploy**.
-3. ستحصل على رابط مثل `https://pos-gros.netlify.app`. كل `git push` يحدّث الموقع تلقائياً.
+3. ستحصل على رابط مثل `https://awydo.netlify.app`. كل `git push` يحدّث الموقع تلقائياً.
 
 (بديل سريع بدون GitHub: app.netlify.com/drop واسحب المجلد.)
 
