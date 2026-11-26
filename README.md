@@ -10,9 +10,9 @@
 |---|---|
 | `index.html` | التطبيق كاملاً في ملف واحد (العربية والفرنسية) |
 | `sw.js` | يجعل التطبيق يفتح بدون إنترنت بعد أول زيارة |
-| `manifest.webmanifest` + `icons/` | التثبيت على الشاشة الرئيسية للهاتف |
+| `manifest.webmanifest` + الأيقونات | التثبيت على الشاشة الرئيسية للهاتف |
 | `config.js` | إعدادات Supabase الافتراضية (اختيارية) |
-| `supabase/schema.sql` | قاعدة البيانات: جدولان ودالتان محميتان بكلمة سر المحل |
+| `schema.sql` | قاعدة البيانات: جدولان ودالتان محميتان بكلمة سر المحل |
 | `netlify.toml` | إعداد النشر على Netlify (بدون أي build) |
 
 ## 1) GitHub
@@ -33,7 +33,7 @@ git push -u origin main
 ## 2) Supabase (المزامنة السحابية)
 
 1. افتح supabase.com ← **New project** (اختر منطقة قريبة، مثلاً Europe West).
-2. **SQL Editor** ← **New query** ← الصق محتوى `supabase/schema.sql` ← **Run**.
+2. **SQL Editor** ← **New query** ← الصق محتوى `schema.sql` ← **Run**.
 3. **Project Settings ← API Keys**: انسخ **Project URL** والمفتاح العام (**anon** أو **publishable**).
    - لا تستعمل أبداً مفتاح `service_role` أو `secret` في التطبيق.
 4. (اختياري) ضعهما في `config.js` حتى لا تكتبهما على كل هاتف.
