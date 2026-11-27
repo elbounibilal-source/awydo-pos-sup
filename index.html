@@ -631,7 +631,7 @@ function vSale(){const c=S.tk.cust?C(S.tk.cust):null;const tr=tierOf();
  <aside class="tl-r" id="tkside"></aside></div>`;
  $("q").oninput=e=>{q=e.target.value;renderGridOnly()};
  $("q").onkeydown=e=>{if(e.key!=="Enter")return;let v=q.trim(),n=1;const mm=v.match(/^(\d+(?:[.,]\d+)?)\s*[*xX×]\s*(.+)$/);if(mm){n=+mm[1].replace(",",".");v=mm[2].trim()}
-  const r=prodFilter(v);const p=S.products.find(p=>p.bar===v)||(r.length===1?r[0]:null);
+  const r=prodFilter(v);const p=(v?S.products.find(p=>p.bar&&p.bar===v):null)||(r.length===1?r[0]:null);
   if(p){addToCart(p.id,n);q="";e.target.value="";renderGridOnly()}else if(v)toast(t("notFound"))};
  $("tier").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;S.tier=b.dataset.k;save();vSale()};
  $("gv").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.gv=b.dataset.k;save();renderGridOnly();$("gv").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))};
@@ -1218,7 +1218,7 @@ function productForm(ed,bar,after,back){const v=ed||{ar:"",fr:"",bar,cat:"food",
  $("x").onclick=back||closeSheet;
  $("ok").onclick=()=>{const ar=$("na").value.trim(),fr=$("nf").value.trim()||ar;if(!ar&&!fr)return;const pd=+$("pr_d").value||0,psm=+$("pr_s").value||pd;
   const f={ar:ar||fr,fr,cat:$("nc").value,bar:$("nb").value.trim(),ps:Math.max(1,Math.floor(+$("nps").value||1)),p:{d:pd,s:psm,g:+$("pr_g").value||psm},img:img||null,exp:$("nexp").value||"",tva:+$("ntva").value,grp:$("ngrp").value.trim(),min:Math.max(0,Math.floor(+$("nmin").value||0))};
-  if(!ed&&!canAddProd(1)){planSheet("limit");return}let p;if(ed){p=Object.assign(ed,f)}else{p={id:Math.max(...S.products.map(p=>p.id))+1,...f,cost:+$("nco").value||0,st:0,ico:v.ico,hue:v.hue};S.products.push(p)}
+  if(!ed&&!canAddProd(1)){planSheet("limit");return}let p;if(ed){p=Object.assign(ed,f)}else{p={id:Math.max(0,...S.products.map(p=>+p.id||0))+1,...f,cost:+$("nco").value||0,st:0,ico:v.ico,hue:v.hue};S.products.push(p)}
   save();enqueue({type:ed?"productUpdate":"product",id:p.id});if(ed)audit("prodEdit",p[S.lang]+" · "+f2(p.p.d)+" / "+f2(p.p.s)+" / "+f2(p.p.g));toast(t("saved"));if(after)after(p);else closeSheet()}}
 
 /* ---- purchases ---- */
@@ -1324,7 +1324,7 @@ function openInv(){const d=draft();const F=$("full");
   $("sug").innerHTML=r.length?r.map(p=>`<button data-id="${p.id}" class="sgi">${thumb(p,"s")}<span class="sgn"><b>${pn(p)}</b><small class="num">${esc(p.bar)} · ${t("instock")} ${p.st}</small></span><span class="note num">${f2(p.cost*p.ps)}</span></button>`).join(""):(/^\d{6,}$/.test(v)?`<span class="note bad">${t("unknownBar")}</span><button class="pri" data-new="1">+ ${t("createProd")}</button>`:"")};
  const pick=(id,keep)=>{addLine(id);if(!keep){$("isc").value="";$("sug").innerHTML=""}lines();const i=d.lines.findIndex(l=>l.id===id);const row=$("ilines").querySelector(`tr[data-i="${i}"]`);if(row){row.classList.add("flash");setTimeout(()=>row.classList.remove("flash"),900)}
   if(innerWidth<700){if(!keep){toast(t("addedL")+": "+pn(P(id)));$("isc").focus()}}else{const q=row?.querySelector("[data-f=q]");if(q){q.focus();q.select()}}};
- const enter=()=>{const v=$("isc").value.trim();const p=S.products.find(p=>p.bar===v);if(p){pick(p.id);return}
+ const enter=()=>{const v=$("isc").value.trim();const p=(v?S.products.find(p=>p.bar&&p.bar===v):null);if(p){pick(p.id);return}
   const bs=$("sug").querySelectorAll("button[data-id]");if(bs.length)pick(+bs[0].dataset.id);else if(!v)buyPicker(id=>pick(id,1),()=>{lines()})};
  $("isc").oninput=sug;$("isc").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();enter()}};$("iadd").onclick=enter;
  $("sug").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.new){openNewProduct($("isc").value.trim(),p=>{closeSheet();pick(p.id)},closeSheet);return}pick(+b.dataset.id)};
@@ -1452,7 +1452,7 @@ function userForm(u){const v=u||{name:"",role:"cashier",active:true};
   if(u&&u.role==="owner"&&role!=="owner"&&S.users.filter(x=>x.role==="owner"&&x.active).length<2){toast(t("lastOwner"));return}
   const perms=role==="owner"?undefined:pm.filter(k=>PERMKEYS.includes(k));const pTxt=perms?" · "+perms.map(k=>t("perm_"+k)).join("، "):"";
   if(u){u.name=n;u.role=role;u.perms=perms;if(pn2)u.pin=hpin(pn2);if($("ua"))u.active=$("ua").checked;audit("staff",`${n} · ${t("role_"+role)}${pn2?" · PIN":""}${pTxt}`)}
-  else{S.users.push({id:Math.max(...S.users.map(x=>x.id))+1,name:n,role,perms,pin:hpin(pn2),active:true});audit("staff",`+ ${n} · ${t("role_"+role)}${pTxt}`)}
+  else{S.users.push({id:Math.max(0,...S.users.map(x=>+x.id||0))+1,name:n,role,perms,pin:hpin(pn2),active:true});audit("staff",`+ ${n} · ${t("role_"+role)}${pTxt}`)}
   save();enqueue({type:"user"});staffSheet()}}
 const ACTS={login:"act_login",logout:"act_logout",override:"act_override",price:"act_price",discount:"act_discount",cancelBuy:"act_cancelBuy",cancelExp:"act_cancelExp",ret:"act_ret",tillOpen:"act_tillOpen",tillClose:"act_tillClose",cashMove:"act_cashMove",import:"act_import",prodEdit:"act_prodEdit",staff:"act_staff",invoice:"act_invoice",settings:"act_settings"};
 function auditSheet(){let fu=0;const draw=()=>{const L=S.audit.filter(a=>!fu||a.u===fu);
@@ -2025,6 +2025,10 @@ function buyPicker(onAdd,onDone){let cat="all",q="";const cnt=id=>{const l=(S.pd
 const PERMKEYS=["price","discount","ret","cancel","cost","buy","expense","import","settings","staff"];
 const permsOf=u=>u.role==="owner"?PERMKEYS.slice():Array.isArray(u.perms)?u.perms:(PERMS[u.role]||[]).slice();
 
+/* ---- v28: repair product ids ---- */
+{const seen=new Set();let mx=Math.max(0,...S.products.map(p=>Number.isFinite(+p.id)&&p.id!==null?+p.id:0));let fixed=0;
+ S.products.forEach(p=>{if(p.id===null||!Number.isFinite(+p.id)||seen.has(+p.id)){p.id=++mx;fixed++}else p.id=+p.id;seen.add(p.id)});
+ if(fixed){if(S.pd)S.pd.lines=(S.pd.lines||[]).filter(l=>P(l.id));S.cart=(S.cart||[]).filter(l=>P(l.id));save()}}
 /* ---- v25: onboarding + plans (free 30 / trial 7d / premium 699) ---- */
 const PLIM=30,PRICE=699;
 if(!S.plan&&!S.needOnb)S.plan={type:"trial",start:Date.now(),until:Date.now()+7*864e5};
