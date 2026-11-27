@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "ma.awydo.pos",
+    "sha256_cert_fingerprints": ["35:B5:D6:03:D8:EB:16:D1:BC:ED:33:A3:3B:7A:39:DB:2F:3B:10:FD:D4:13:5C:0C:BC:CB:79:09:5D:1A:0F:58"]
+  }
+}]
