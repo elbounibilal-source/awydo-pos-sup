@@ -2038,6 +2038,7 @@ const daysLeft=()=>Math.max(0,Math.ceil(((S.plan||{}).until-Date.now())/864e5));
 function planLabel(){const n=planNow();return n==="free"?`${t("plFree")} · ${S.products.length}/${PLIM}`:n==="trial"?`${t("plTrial")} · ${t("daysLeft2")} ${daysLeft()} ${daysLeft()===1?t("dayW"):t("daysW")}`:`${t("premUntil")} ${new Date(S.plan.until).toLocaleDateString("fr-MA")}`}
 const canAddProd=n=>planNow()!=="free"||S.products.length+n<=PLIM;
 function planCheck(){const p=S.plan||{};if(p.type==="trial"&&p.until<=Date.now()&&!p.ended){p.ended=1;save();setTimeout(()=>{toast(t("trialEnd"));planSheet()},600)}}
+const codeN=c=>String(c||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[İıi]/g,"I").toUpperCase().replace(/[^A-Z0-9]/g,"").replace(/O/g,"0").replace(/[IL]/g,"1");
 const planCode=(acct,ym)=>hpin(acct+"|"+ym+"|awydo-pro-2026").slice(1,9).toUpperCase();
 function planSheet(why){const n=planNow();const ym=d=>d.getFullYear()+String(d.getMonth()+1).padStart(2,"0");
  const pc=Math.min(100,S.products.length/PLIM*100);
@@ -2051,11 +2052,11 @@ function planSheet(why){const n=planNow();const ym=d=>d.getFullYear()+String(d.g
  </div>
  ${n!=="premium"?`<a class="abtn wa" style="width:100%;margin-top:10px;justify-content:center" href="https://wa.me/?text=${encodeURIComponent(t("subMsg")+" "+shopName()+" · "+t("acctNo")+": "+S.acctId)}" target="_blank" rel="noopener">${IWA} ${t("subReq")}</a>`:""}
  <p class="note">${t("payHow")}</p>
- <div class="row" style="flex-wrap:nowrap"><input id="actc" class="num" placeholder="${t("actCode")}" autocomplete="off" style="text-transform:uppercase"><button class="pri" id="actg" style="flex:none">${t("actGo")}</button></div>
+ <div class="row" style="flex-wrap:nowrap"><input id="actc" class="num" lang="en" dir="ltr" placeholder="${t("actCode")}" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"><button class="pri" id="actg" style="flex:none">${t("actGo")}</button></div>
  <p class="note">${t("acctNo")}: <b class="num">${esc(S.acctId)}</b></p>`);
  $("x").onclick=closeSheet;
  $("actg").onclick=()=>{const c=$("actc").value.trim().toUpperCase();const d=new Date();const nx=new Date(d.getFullYear(),d.getMonth()+1,1);
-  const hit=[d,nx].find(x=>planCode(S.acctId,ym(x))===c);if(!hit){toast(t("actBad"));return}
+  const hit=[d,nx].find(x=>codeN(planCode(S.acctId,ym(x)))===codeN(c));if(!hit){toast(t("actBad"));return}
   const until=new Date(hit.getFullYear()+1,hit.getMonth(),6).getTime();S.plan={type:"premium",start:Date.now(),until:Math.max(until,(S.plan||{}).until||0)};audit("settings","Premium → "+new Date(S.plan.until).toLocaleDateString("fr-MA"));save();enqueue({type:"plan"});toast(t("actOk"));closeSheet();render()}}
 function showOnb(mode){let st=0,plan="trial",bt="grocer";const D={};let ov=$("onb");if(!ov){document.body.insertAdjacentHTML("beforeend",'<div id="onb" class="onb"></div>');ov=$("onb")}
  const dots=()=>`<div class="odots">${[1,2,3].map(i=>`<i class="${i<=st?"on":""}"></i>`).join("")}</div>`;
